@@ -1,0 +1,11 @@
+<div class="panel" style="padding: 0px 0 8px 8px;">
+  <%= item.type %> Panel
+
+  <div class="panel_test" style="padding-left: 8px;">
+    <% for(var k = 0; k < panel.tests.length ; k++) { %>
+      <%= view('./views/lab/test', {'item': item, 'test': panel.tests[k], 'show_lab_p': false}) %>
+    <% } %>
+
+    <%= view('./views/lab/laboratory', {'item': item}) %>
+  </div>
+</div>

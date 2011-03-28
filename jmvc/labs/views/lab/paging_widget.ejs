@@ -1,0 +1,63 @@
+<div style="display: none">
+  limit: <%= summary.limit %>
+  <br>
+  offset: <%= summary.offset %>
+  <br>
+  order_by: <%= summary.order_by %>
+  <br>
+  total_document_count: <%= summary.total_document_count %>
+  <br>
+  total_pages_count: <%= summary.total_pages_count %>
+  <br>
+  current_page: <%= summary.current_page %>
+  <br>
+  <br>
+</div>
+
+<div class="paging_widget" style="float: right; margin-top: -64px;">
+  <div>
+    <%
+      var limit = summary.limit;
+      var offset = summary.offset;
+      var order_by = summary.order_by;
+      var total_document_count = summary.total_document_count;
+      var total_pages_count = summary.total_pages_count;
+      var current_page = summary.current_page;
+    %>
+
+    <select name="page_selector" id="page_selector" style="font-size: small">
+      <% for(var k = 1; k < total_pages_count ; k++) { %>
+        <option
+        <% if (k==current_page) { %>
+          SELECTED
+        <% } %>
+        value="<%= k %>"><%= k %></option>
+      <% } %>
+    </select>
+
+    <span>
+      <a href="last">
+        of <%= total_pages_count %> pages
+      </a>
+    </span>
+  </div>
+  <div>
+    <select name="limit_selector" id="limit_selector" style="font-size: small">
+      <% _([10, 25, 50, 100]).each(function(i){ %>
+        <option
+        <% if (i==limit) { %>
+          SELECTED
+        <% } %>
+        value="<%= i %>"><%= i %></option>
+      <% 
+          })
+      %>
+    </select>
+    <span>
+      labs per page
+    </span>
+  </div>
+  <div>
+    [<a href="#" id="toggle_all_details">show details</a>]
+  </div>
+</div>

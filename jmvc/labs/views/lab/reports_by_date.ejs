@@ -1,0 +1,54 @@
+
+
+<h3>Labs by Date</h3>
+
+<% 
+  // NOTE:  not doing anything with meta at this point 
+  var reports = _.sortBy(all_reports, function(r){ return r.item.date_measured; }).reverse();
+  var old_date = reports[0].item.date_measured;
+  var background_p = false;
+  
+  for(var i = 0; i < reports.length ; i++) {
+    var report = reports[i]; 
+    var item = report.item;
+    var meta = report.meta;
+%>
+
+  <%
+    // close report_day div if open, but not on the first day
+    if ((old_date != item.date_measured) && i != 0) { 
+      background_p = !background_p
+      %></div>
+  <% } %>
+
+  <%
+    // show date and open report_day div if date changed (or this is the first day)
+    if ((old_date != item.date_measured) || i == 0) { %>
+    <div class="report_day" style="margin-left: 0px; 
+      <% if (background_p) { %>
+        background: #fff;
+      <% } %>
+    ">
+    <h4 style="color: #999; margin-left: -4px; margin-top: 8px; margin-bottom: 0px"><%= item.date_measured.substring(0,10) %></h4>
+
+  <% }
+     // update day
+     old_date = item.date_measured;
+  %>
+
+<!-- DRY with above -->
+  <div class="report">
+    <div class="report_inner">
+      <%= report.category %>
+      <% for(var j = 0; j < item.panels.length ; j++) { %>
+        <%= view('./views/lab/panel', {'item': item, 'panel': item.panels[j], 'date_p': false}) %>
+      <% } %>
+
+      <% for(var k = 0; k < item.tests.length ; k++) { %>
+        <%= view('./views/lab/test', {'item': item, 'test': item.tests[k], 'show_lab_p': true, 'date_p': false}) %>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" style="height: 100%">
+  <head>
+    <title{{APP_NAME}}</title>
+    <link rel="stylesheet" href="{{INDIVO_UI_APP_CSS}}" type="text/css" media="screen">
+    <style>
+      /* If the app's styling is simple enough, just inline it here */
+      body { background: #FAFAFA; } /* don't inherit background, so we don't color the inside with record colors */
+      div.date_measured_by_type {font-size: .9em; color:#999; font-weight: normal; margin-bottom: -32px; float: left;}
+      div.lab_subhead { float:right; margin-top: -24px; padding-right: 8px; }
+      blockquote.lab_comments { margin: 1em 1em 1em 0; font-size: 1.1em; border-left: 3px solid #ddd; background: #fff; padding: 16px; font-style: italic; font-family: Corbel, 'Lucida Sans', 'Gill Sans', 'Helvetica Neue', sans-serif}
+      div.panel_headline { font-size: 16px; border-bottom: 1px solid #ddd; margin-bottom: 8px; font-weight: normal; text-transform: uppercase; }
+      div.test_div { margin: 16px 0 24px 24px; }
+      div.test_headline { margin-bottom: 4px; font-size: 15px; border-bottom: 1px solid #ddd; font-weight: normal; text-transform: uppercase;}
+      span.results_value { font-weight: bold; }
+      span.results_preliminary { color: #aaa; font-size: .8em; }
+      span.flag { color: black; text-transform: uppercase; padding: 0px 6px; background: orange; font-weight: bold;}
+      span.abnormal { color: black; text-transform: uppercase; padding: 0px 6px; background: orange; font-weight: bold;}
+      span.critical { color: yellow; text-transform: uppercase; padding: 0px 6px; background: red; font-weight: bold;}
+      span.result_in_range_arrows { font-size: 1.5em; }
+      table.result_in_range { width: 95%; margin: 0px; }
+      table.result_in_range th, td {
+        border-top: none;
+        border-right: 1px solid #eee;
+        border-bottom: none;
+        border-left: 1px solid #eee;
+        padding: 0.1em;
+        text-align: center;
+        font-weight: normal;
+      }
+      table.result_in_range th:first-child, td:first-child { border-left:none; }
+      table.result_in_range th:last-child, td:last-child { border-right:none; } 
+    </style>
+  </head>
+  <body>
+    <!-- development or production -->
+    <script type='text/javascript' src='/apps/labs/jmvc/steal/steal.js?{{SUBMODULE_NAME}},development'></script>
+    <!-- JMVC will insert a MODELNAME div here -->
+  </body>
+</html>
