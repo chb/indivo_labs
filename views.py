@@ -216,8 +216,9 @@ def list_labs(request):
     else:
         print 'FIXME: no client support for labs via carenet. See problems app for an example.. Exiting...'
         return
-        
-    reports_et_list = list(parse_xml(labs_xml))
+
+    reports_et = parse_xml(labs_xml)
+    reports_et_list = list(reports_et)
     reports = {
       'lab_types_categories_list': lab_types_categories_list,
       'lab_names_to_categories_map': lab_names_to_categories_map,
@@ -340,8 +341,8 @@ def list_labs(request):
         # FIXME: this is different than the lab.xml sample file in the indivo server document schemas
         # <labTest xsi:type="SingleResultLabTest">
         
-        # if t.get('class').find('SingleResultLabTest'):
-        if t.get(XSI+'type') == 'SingleResultLabTest':
+        if t.get('class').find('SingleResultLabTest') or \
+                t.get(XSI+'type') == 'SingleResultLabTest':
             test['results'] = _parse_single_result(t[3])
         else:
             raise 'Multiple Result lab tests not implimented!'
@@ -358,9 +359,9 @@ def list_labs(request):
             result['flag_value'] = r[0].get('value', '')
             # if there's no flag, pass the whole set, otherwise slice it off
             flag_p = 1
-            
-        # if r.get('class').find('ResultInRange') > 0:
-        if r.get(XSI+'type') == 'ResultInRange':
+        
+        if r.get('class').find('ResultInRange') > 0 or \
+                r.get(XSI+'type') == 'ResultInRange':
             result.update(_parse_result_in_range(r[flag_p:len(r)]))
         elif r.get('class').find('ResultInSet') > 0:
             result.update(_parse_result_in_set(r[flag_p:len(r)]))
@@ -444,7 +445,6 @@ def list_labs(request):
               })
             
           elif len(e) > 0 and e.tag == NS+'normalRange':
-            import pdb; pdb.set_trace()            
             result.update({
               'normal_range_minimum'                  : v[1][0].text          if v[1][0].tag.find('minimum') else '',
               'normal_range_maximum'                  : v[1][1].text          if v[1][1].tag.find('maximum') else '',
@@ -457,7 +457,6 @@ def list_labs(request):
             #     })
           
           elif len(e) > 0 and e.tag == NS+'nonCriticalRange':
-            import pdb; pdb.set_trace()
             result.update({
               'non_critical_range_minimum'            : v[2][0].text          if v[2][0].tag.find('minimum') else '',
               'non_critical_range_maximum'            : v[2][1].text          if v[2][1].tag.find('maximum') else '',
@@ -495,7 +494,7 @@ def list_labs(request):
     # note: we depend on the reports being ordered by date_measured
     # it's ascending by default, hence the reverse()
     seen_lab_types_count = {}
-    reports_for_parsing = reports_et_list[1:]
+    reports_for_parsing = list(reports_et.findall('Report'))
     reports_for_parsing.reverse()
     reports['latest_reports'] = []
     
