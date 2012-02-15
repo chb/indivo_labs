@@ -29,7 +29,6 @@
 			<input type="hidden" name="limit" value="{{ limit }}" />
 			<input type="hidden" name="offset" value="{{ offset }}" />
 			<input type="hidden" name="order_by" value="{{ order_by }}" />
-			<input type="hidden" name="date_range" value="{{ lab_type }}" />
 			<input type="hidden" name="lab_type" value="{{ lab_type }}" />
 			<input type="hidden" name="date_start" value="{{ date_start }}" />
 			<input type="hidden" name="date_end" value="{{ date_end }}" />
@@ -181,13 +180,6 @@
 		$('#limit-menu a').click(function(ev) {
 			newVal = $(this).attr("data-val");
 			$(this).closest('form').find('input[name*="limit"]').val(newVal);
-			$(this).closest('form').submit();
-			return false;
-		});
-		
-		$('#date-range-menu a').click(function(ev) {
-			newVal = $(this).attr("data-val");
-			$(this).closest('form').find('input[name*="date_range"]').val(newVal);
 			$(this).closest('form').submit();
 			return false;
 		});
