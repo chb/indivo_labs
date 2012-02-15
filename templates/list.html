@@ -7,12 +7,11 @@
     <script src="{{ STATIC_HOME }}/js/bootstrap-popover.js"></script>
     <script src="{{ STATIC_HOME }}/js/bootstrap-dropdown.js"></script>
     <script src="{{ STATIC_HOME }}/js/bootstrap-modal.js"></script>
-    <script src="{{ STATIC_HOME }}/js/jquery-ui-1.8.16.custom.min.js"></script>
-<!--     <script src="{{ STATIC_HOME }}/js/jQAllRangeSliders-min.js"></script> -->
-    <script src="{{ STATIC_HOME }}/js/jQRangeSlider.js"></script>
-    <script src="{{ STATIC_HOME }}/js/jQDateRangeSlider.js"></script>
+    <script src="{{ STATIC_HOME }}/js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script src="{{ STATIC_HOME }}/js/jQAllRangeSliders-min.js"></script>
     <style type="text/css">
     	.page-header {margin-bottom:10px; padding-bottom:0px !important;}
+    	.page-header h1 {font-weight:normal;}
     	.nav {margin-bottom:5px; padding-bottom:0;}
     	#source-modal {left:15px; margin:0; right:5px; top:5%; width:auto;}
     	.sortable {cursor: pointer;}
@@ -48,15 +47,6 @@
 								<li><a data-val="100" href="#">100 per page</a></li>
 							</ul>
 						</li>
-						<!-- <li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">From {{ date_range }}<b class="caret"></b></a>
-							<ul id="date-range-menu" class="dropdown-menu">
-								<li><a data-val="today" href="#">Today</a></li>
-								<li><a data-val="past 7 days" href="#">Past 7 days</a></li>
-								<li><a data-val="past 30 days" href="#">Past 30 days </a></li>
-								<li><a data-val="all time" href="#">All Time</a></li>
-							</ul>
-						</li> -->
 						<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Of Type {{ lab_type }}<b class="caret"></b></a>
 							<ul id="lab-type-menu" class="dropdown-menu">
@@ -137,14 +127,12 @@
 			{% endif %}
 		</form>
 		<div id="source-modal" class="modal hide">
-		<div class="modal-header">
-			<a class="close" data-dismiss="modal">×</a>
-			<h3>Original Document</h3>
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>Original Document</h3>
+			</div>
+			<div class="modal-body"></div>
 		</div>
-		<div class="modal-body">
-			
-		</div>
-	</div>
 	</div><!-- container-fluid -->
 </body>
 <script>
