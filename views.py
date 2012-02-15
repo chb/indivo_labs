@@ -169,7 +169,7 @@ def list_labs(request):
         if len(oldest_lab) > 0:
             oldest_lab_date = oldest_lab[0]['dateMeasured']
         else:
-            oldest_lab_date = datetime.date.utcnow()
+            oldest_lab_date = datetime.datetime.utcnow()
 
         max_date_string = datetime.datetime.utcnow().isoformat() + 'Z'
         min_date_string = datetime.datetime.combine(oldest_lab_date, datetime.time()).isoformat() + 'Z'
