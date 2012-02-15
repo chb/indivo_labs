@@ -1,0 +1,14 @@
+<tr>
+	<td> {{ lab.dateMeasured|date:"d M Y" }}</td>
+	<td> {{ lab.labType }}</td>
+	<td> <span class="has-popover" data-content="{{ lab.laboratory.address}}" data-original-title="Address">{{ lab.laboratory.name }}</span></td>
+	<td> {{ lab.firstLabTestName }}</td>
+	<td> {{ lab.firstLabTestValue }}
+		{% if lab.abnormal %}	
+			<span class="label label-important">abnormal</span>
+		{% endif %}
+	</td>
+	<td> {{ lab.normalRangeMinimum }}</td>
+	<td> {{ lab.normalRangeMaximum }}</td>
+	<td> <a class="source-link" href="lab/{{lab.id}}/"><i class="icon-file has-tooltip" data-placement="left" rel="tooltip" data-original-title="View Source Document"></i></a></td>	
+</tr>
