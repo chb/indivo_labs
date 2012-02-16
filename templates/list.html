@@ -18,7 +18,7 @@
     	.dropdown-menu {max-width:none;}
     	#date-container {height:25px;}
     	#date-slider {margin-left: 10px; margin-right:10px;margin-top:3px;}
-    	#date-range-start, #date-range-end {display: inline-block; float:left; font-size: 13px; white-space: nowrap;}
+    	#date-range-start, #date-range-end {display: inline-block; float:left; font-size: 13px; text-align:center; width:85px; white-space: nowrap;}
     	#lab-type-menu {max-height: 500px; overflow-y:scroll}
     </style>
 </head>
@@ -39,19 +39,19 @@
 						<li><h1 class="span3">Labs Report</h1></li>
 						<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ range_description }}<b class="caret"></b></a>
-							<ul id="limit-menu" class="dropdown-menu">
-								<li><a data-val="15" href="#">15 per page</a></li>
-								<li><a data-val="30" href="#">30 per page</a></li>
-								<li><a data-val="50" href="#">50 per page</a></li>
-								<li><a data-val="100" href="#">100 per page</a></li>
+							<ul class="dropdown-menu">
+								<li><a class="input-update" data-val="15" data-name="limit" href="#">15 per page</a></li>
+								<li><a class="input-update" data-val="30" data-name="limit" href="#">30 per page</a></li>
+								<li><a class="input-update" data-val="50" data-name="limit" href="#">50 per page</a></li>
+								<li><a class="input-update" data-val="100" data-name="limit" href="#">100 per page</a></li>
 							</ul>
 						</li>
 						<li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Of Type {{ lab_type }}<b class="caret"></b></a>
-							<ul id="lab-type-menu" class="dropdown-menu">
-								<li><a data-val="All" href="#">All</a></li>
+							<ul class="dropdown-menu">
+								<li><a class="input-update" data-val="All" data-name="lab_type" href="#">All</a></li>
 								{% for type in lab_types %}
-									<li><a data-val="{{ type }}" href="#">{{ type }}</a></li>								
+									<li><a class="input-update" data-val="{{ type }}" data-name="lab_type" href="#">{{ type }}</a></li>								
 								{% endfor %}
 							</ul>
 						</li>
@@ -63,48 +63,31 @@
 					</div>
 				</small>
 			</div><!-- page-header -->
-			{% if prev_offset >= 0  %}
-				<a class="btn btn-small pull-left change-offset" href="#" data-val="{{ prev_offset }}"><i class="icon-arrow-left"></i> prev</a>
-			{% endif %}
-			{% if next_offset >= 0 %}
-				<a class="btn btn-small pull-right change-offset" href="#" data-val="{{ next_offset }}">next <i class="icon-arrow-right"></i></a>
-			{% endif %}
+			{% include "labs/templates/_navigation.html" %}
 			<table class="table table-striped table-condensed">
 				<thead>
 					<tr>
-						<th class="span2">Date Measured
-							{% if order_by == "date_measured" %}
-								<i class="icon-arrow-down has-tooltip sortable" data-order-by="-date_measured" data-placement="top" rel="tooltip" data-original-title="Change Sort"></i>
-							{% else %}
-								{% if order_by == "-date_measured" %}
-									<i class="icon-arrow-up has-tooltip sortable" data-order-by="date_measured" data-placement="top" rel="tooltip" data-original-title="Change Sort"></i>
-								{% else %}
-									<i class="icon-resize-vertical has-tooltip sortable" data-order-by="date_measured" data-placement="top" rel="tooltip" data-original-title="Sort"></i>
-								{% endif %}
-							{% endif %}
+						<th class="span2">
+							{% with "date_measured" as header_name %}
+								{% with "Date Measured" as header_text %}
+									{% include "labs/templates/_sortable_header.html" %}
+							 	{% endwith %}
+							{% endwith %}
 						</th>
-						<th>Lab Type
-							{% if order_by == "lab_type" %}
-								<i class="icon-arrow-down has-tooltip sortable" data-order-by="-lab_type" data-placement="top" rel="tooltip" data-original-title="Change Sort"></i>
-							{% else %}
-								{% if order_by == "-lab_type" %}
-									<i class="icon-arrow-up has-tooltip sortable" data-order-by="lab_type" data-placement="top" rel="tooltip" data-original-title="Change Sort"></i>
-								{% else %}
-									<i class="icon-resize-vertical has-tooltip sortable" data-order-by="lab_type" data-placement="top" rel="tooltip" data-original-title="Sort"></i>
-								{% endif %}
-							{% endif %}
+						<th>
+							{% with "lab_type" as header_name %}
+								{% with "Lab Type" as header_text %}
+									{% include "labs/templates/_sortable_header.html" %}
+							 	{% endwith %}
+							{% endwith %}
 						</th>
 						<th>Laboratory Name</th>
-						<th>Lab Test Name
-							{% if order_by == "lab_test_name" %}
-								<i class="icon-arrow-down has-tooltip sortable" data-order-by="-lab_test_name" data-placement="top" rel="tooltip" data-original-title="Change Sort"></i>
-							{% else %}
-								{% if order_by == "-lab_test_name" %}
-									<i class="icon-arrow-up has-tooltip sortable" data-order-by="lab_test_name" data-placement="top" rel="tooltip" data-original-title="Change Sort"></i>
-								{% else %}
-									<i class="icon-resize-vertical has-tooltip sortable" data-order-by="lab_test_name" data-placement="top" rel="tooltip" data-original-title="Sort"></i>
-								{% endif %}
-							{% endif %}
+						<th>
+							{% with "lab_test_name" as header_name %}
+								{% with "Lab Test Name" as header_text %}
+								{% include "labs/templates/_sortable_header.html" %}
+							 	{% endwith %}
+							{% endwith %}
 						</th>
 						<th>Value</th>
 						<th>Min</th>
@@ -118,12 +101,7 @@
 					{% endfor %}
 				</tbody>
 			</table>
-			{% if prev_offset >= 0  %}
-				<a class="btn btn-small pull-left change-offset" href="#" data-val="{{ prev_offset }}"><i class="icon-arrow-left"></i> prev</a>
-			{% endif %}
-			{% if next_offset >= 0 %}
-				<a class="btn btn-small pull-right change-offset" href="#" data-val="{{ next_offset }}">next <i class="icon-arrow-right"></i></a>
-			{% endif %}
+			{% include "labs/templates/_navigation.html" %}
 		</form>
 		<div id="source-modal" class="modal hide">
 			<div class="modal-header">
@@ -177,34 +155,14 @@
 			$('#date-container').hide();
 		} 
 		
-		$('#limit-menu a').click(function(ev) {
-			newVal = $(this).attr("data-val");
-			$(this).closest('form').find('input[name*="limit"]').val(newVal);
+		$('.input-update').click(function(ev) {
+			newVal = $(this).data("val");
+			inputName = $(this).data("name");
+			$(this).closest('form').find('input[name*="' + inputName + '"]').val(newVal);
 			$(this).closest('form').submit();
 			return false;
 		});
 		
-		$('#lab-type-menu a').click(function(ev) {
-			newVal = $(this).attr("data-val");
-			$(this).closest('form').find('input[name*="lab_type"]').val(newVal);
-			$(this).closest('form').submit();
-			return false;
-		});
-		
-		$('.change-offset').click(function(ev) {
-			newVal = $(this).attr("data-val");
-			$(this).closest('form').find('input[name*="offset"]').val(newVal);
-			$(this).closest('form').submit();
-			return false;
-		});
-		
-		$('.sortable').click(function(ev) {
-			orderBy = $(this).attr("data-order-by");
-			$(this).closest('form').find('input[name*="order_by"]').val(orderBy);
-			$(this).closest('form').submit();
-			return false;
-		});
-
 		$('.source-link').click(function(ev) {
 			var jqxhr = $.get($(this).attr("href")).success(function(data) {
 				$('#source-modal .modal-body').html(data);

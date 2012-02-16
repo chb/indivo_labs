@@ -94,6 +94,7 @@ def get_labs(root):
     for r in reportNodes:
         d = r.findtext('.//{%s}dateMeasured' % NS, default='')
         try:
+            # parse date string and set timezone as UTC
             d = dateutil.parser.parse(d)
             d = d.astimezone(dateutil.tz.tzutc())
         except ValueError as e:
@@ -200,14 +201,14 @@ def list_labs(request):
         print 'FIXME: no client support for labs via carenet. See problems app for an example.. Exiting...'
         return
     
+    # parse labs
     labs_root = etree.XML(labs_xml)
-    
     labs = get_labs(labs_root)
-    total_document_count = int(labs_root.find('.//Summary').attrib['total_document_count'])
     
+    # build a description for the range of results shown and calculate offsets
     next_offset = None
     prev_offset = None
-    
+    total_document_count = int(labs_root.find('.//Summary').attrib['total_document_count'])
     if total_document_count <= 0:
         range_description = 'No Results'
     elif offset + limit < total_document_count:
@@ -220,6 +221,7 @@ def list_labs(request):
         prev_offset = offset - limit
         if prev_offset < 0:
             prev_offset = 0
+            
     return render_to_response("labs/templates/list.html", {'labs': labs, 
                                                            'lab_types': lab_types,
                                                            'STATIC_HOME': settings.STATIC_HOME,

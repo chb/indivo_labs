@@ -1,0 +1,8 @@
+<div class="navigation">
+	{% if prev_offset >= 0  %}
+		<a class="input-update btn btn-small pull-left change-offset" href="#" data-val="{{ prev_offset }}" data-name="offset"><i class="icon-arrow-left"></i> prev</a>
+	{% endif %}
+	{% if next_offset >= 0 %}
+		<a class="input-update btn btn-small pull-right change-offset" href="#" data-val="{{ next_offset }}" data-name="offset">next <i class="icon-arrow-right"></i></a>
+	{% endif %}
+</div>

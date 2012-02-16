@@ -1,0 +1,11 @@
+{% if order_by == header_name %}
+	<span class="input-update has-tooltip sortable" data-val="-{{ header_name }}" data-name="order_by" data-placement="top" rel="tooltip" data-original-title="Change Sort Direction">{{ header_text }}</span>
+	<span class="icon-arrow-down"></span>
+{% else %}
+	{% if "-"|add:header_name == order_by %}
+		<span class="input-update has-tooltip sortable" data-val="{{ header_name }}" data-name="order_by" data-placement="top" rel="tooltip" data-original-title="Change Sort Direction">{{ header_text }}</span>
+		<span class="icon-arrow-up"></span>
+	{% else %}
+		<span class="input-update has-tooltip sortable" data-val="{{ header_name }}" data-name="order_by" data-placement="top" rel="tooltip" data-original-title="Sort">{{ header_text }}</span>
+	{% endif %}
+{% endif %}
