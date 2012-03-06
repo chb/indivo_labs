@@ -148,7 +148,6 @@ def list_labs(request):
     
     
     #read in previous values from session
-    previous_lab_type = request.session.get("lab_type", None)
     previous_date_start = request.session.get("date_start", None)
     previous_date_end = request.session.get("date_end", None)
 
@@ -177,15 +176,11 @@ def list_labs(request):
         date_start_string = request.GET.get('date_start', min_date_string)
         date_end_string = request.GET.get('date_end', max_date_string)
         
-        #resets when changing lab_type or date start/end
-        if previous_lab_type != lab_type or previous_date_start != date_start_string or previous_date_end != date_end_string:
+        #resets when changing date start/end
+        if previous_date_start != date_start_string or previous_date_end != date_end_string:
             offset = 0
-            if previous_lab_type != lab_type:
-                date_start_string = min_date_string
-                date_end_string = max_date_string
-    
+            
         #save off params in session
-        request.session['lab_type'] = lab_type
         request.session['date_start'] = date_start_string        
         request.session['date_end'] =  date_end_string
         
