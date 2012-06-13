@@ -29,7 +29,7 @@
 			<input type="hidden" name="limit" value="{{ limit }}" />
 			<input type="hidden" name="offset" value="{{ offset }}" />
 			<input type="hidden" name="order_by" value="{{ order_by }}" />
-			<input type="hidden" name="lab_type" value="{{ lab_type }}" />
+			<input type="hidden" name="lab_status" value="{{ lab_status_id }}" />
 			<input type="hidden" name="date_start" value="{{ date_start }}" />
 			<input type="hidden" name="date_end" value="{{ date_end }}" />
 			
@@ -47,11 +47,11 @@
 							</ul>
 						</li>
 						<li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Of Type {{ lab_type }}<b class="caret"></b></a>
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">With Status {{ lab_status_display }}<b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a class="input-update" data-val="All" data-name="lab_type" href="#">All</a></li>
-								{% for type in lab_types %}
-									<li><a class="input-update" data-val="{{ type }}" data-name="lab_type" href="#">{{ type }}</a></li>								
+								<li><a class="input-update" data-val="All" data-name="lab_status" href="#">All</a></li>
+								{% for s_id, s_name in lab_statuses.items %}
+									<li><a class="input-update" data-val="{{ s_id }}" data-name="lab_status" href="#">{{ s_name }}</a></li>								
 								{% endfor %}
 							</ul>
 						</li>
@@ -68,22 +68,22 @@
 				<thead>
 					<tr>
 						<th class="span2">
-							{% with "date_measured" as header_name %}
+							{% with "collected_at" as header_name %}
 								{% with "Date Measured" as header_text %}
 									{% include "labs/templates/_sortable_header.html" %}
 							 	{% endwith %}
 							{% endwith %}
 						</th>
 						<th>
-							{% with "lab_type" as header_name %}
-								{% with "Lab Type" as header_text %}
+							{% with "status_identifier" as header_name %}
+								{% with "Lab Status" as header_text %}
 									{% include "labs/templates/_sortable_header.html" %}
 							 	{% endwith %}
 							{% endwith %}
 						</th>
 						<th>Laboratory Name</th>
 						<th>
-							{% with "lab_test_name" as header_name %}
+							{% with "test_name_title" as header_name %}
 								{% with "Lab Test Name" as header_text %}
 								{% include "labs/templates/_sortable_header.html" %}
 							 	{% endwith %}
