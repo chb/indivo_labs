@@ -116,7 +116,7 @@ def parse_labs(labs):
             abn_interp = lab.get('abnormal_interpretation_identifier', None)
             if abn_interp and abn_interp != 'normal':
                 lab['abnormal'] = True
-        except (KeyError, ValueError) as e:
+        except (KeyError, ValueError, TypeError) as e:
             pass
 
         # Preprocess the lab's address and organization names
