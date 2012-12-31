@@ -1,8 +1,7 @@
 <tr>
-	<td> {{ lab.collected_at|date:"d M Y" }}</td>
-	<td> {{ lab.status_title }}</td>
-	<td> <span class="has-popover" data-content="{{ lab.adr }}" data-original-title="Address">{{ lab.org }}</span></td>
-	<td> {{ lab.test_name_title }}</td>
+	<td> {{ lab.date|date:"d M Y" }}</td>
+	<td> {{ lab.status_code_title }}</td>
+	<td> {{ lab.name_code_title }}</td>
 	<td> {{ lab.quantitative_result_value_value }} {{ lab.quantitative_result_value_unit }}
 		{% if lab.abnormal %}	
 			<span class="label label-important">abnormal</span>

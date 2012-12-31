@@ -68,23 +68,22 @@
 				<thead>
 					<tr>
 						<th class="span2">
-							{% with "collected_at" as header_name %}
-								{% with "Date Measured" as header_text %}
+							{% with "date" as header_name %}
+								{% with "Date" as header_text %}
 									{% include "labs/templates/_sortable_header.html" %}
 							 	{% endwith %}
 							{% endwith %}
 						</th>
 						<th>
-							{% with "status_identifier" as header_name %}
+							{% with "status_code_identifier" as header_name %}
 								{% with "Lab Status" as header_text %}
 									{% include "labs/templates/_sortable_header.html" %}
 							 	{% endwith %}
 							{% endwith %}
 						</th>
-						<th>Laboratory Name</th>
 						<th>
-							{% with "test_name_title" as header_name %}
-								{% with "Lab Test Name" as header_text %}
+							{% with "name_code_title" as header_name %}
+								{% with "Lab Name" as header_text %}
 								{% include "labs/templates/_sortable_header.html" %}
 							 	{% endwith %}
 							{% endwith %}
