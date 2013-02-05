@@ -52,14 +52,17 @@ def after_auth(request):
     after Indivo authorization, exchange the request token for an access token and store it in the web session.
     """
     # get the token and verifier from the URL parameters
-    oauth_token, oauth_verifier = request.GET['oauth_token'], request.GET['oauth_verifier']
-    
+    oauth_token, oauth_verifier = request.GET.get('oauth_token', None), request.GET.get('oauth_verifier', None)
+
+    if not (oauth_token and oauth_verifier):
+        raise Exception("no stored token found in after_auth")
+
     # retrieve request token stored in the session
-    token_in_session = request.session['request_token']
+    token_in_session = request.session.get('request_token', None)
     
     # is this the right token?
-    if token_in_session['oauth_token'] != oauth_token:
-        return HttpResponse("oh oh bad token")
+    if token_in_session and token_in_session.get('oauth_token', '') != oauth_token:
+        return HttpResponse("tokens do not match")
     
     # get the indivo client and use the request token as the token for the exchange
     client = get_indivo_client(request, with_session_token=False)
@@ -119,25 +122,13 @@ def parse_labs(labs):
         except (KeyError, ValueError, TypeError) as e:
             pass
 
-        # Preprocess the lab's address and organization names
-#        lab['org'] = lab['collected_by_org_name'] or 'Not Supplied'
-#        prefix = 'collected_by_org_adr_'
-#        adr_fields = (
-#            lab[prefix+'street'],
-#            lab[prefix+'city'],
-#            lab[prefix+'region'],
-#            lab[prefix+'postalcode'],
-#            lab[prefix+'country'],
-#            )
-#        lab['adr'] = ', '.join([f for f in adr_fields if f]) or 'Not Supplied'
-
         return lab
         
     return map(_process_lab, labs)
 
 def show_lab(request, lab_id):
     client = get_indivo_client(request)
-    record_id = request.session['record_id']
+    record_id = request.session.get('record_id')
     resp, doc = client.record_specific_document(record_id=record_id, document_id=lab_id)
     if resp['status'] != '200':
         # TODO: handle errors
@@ -159,52 +150,58 @@ def list_labs(request):
     previous_date_start = request.session.get("date_start", None)
     previous_date_end = request.session.get("date_end", None)
 
-    if request.session.has_key('record_id'):
-        record_id = request.session['record_id']
-        client = get_indivo_client(request)
+    record_id = request.session.get('record_id', None)
+    carenet_id = request.session.get('carenet_id', None)
 
-        # retrieve a min date for labs
-        oldest_params = {'limit': '1', 'order_by': 'date'}
-        if lab_status in LAB_STATUSES:
-            oldest_params['status_code_identifier'] = lab_status
+    if not (record_id or carenet_id):
+        raise Exception("no record or carenet specified")
+
+    client = get_indivo_client(request)
+
+    # retrieve a min date for labs
+    oldest_params = {'limit': '1', 'order_by': 'date'}
+    if lab_status in LAB_STATUSES:
+        oldest_params['status_code_identifier'] = lab_status
+    if record_id:
         resp, content = client.generic_list(record_id=record_id, data_model="LabResult", body=oldest_params)
-        if resp['status'] != '200':
-            # TODO: handle errors
-            raise Exception("Error fetching oldest lab: %s"%content)
-        oldest_lab = parse_labs(simplejson.loads(content))
-        if len(oldest_lab) > 0:
-            oldest_lab_date = oldest_lab[0]['date']
-        else:
-            oldest_lab_date = datetime.datetime.utcnow()
-
-        max_date_string = datetime.datetime.utcnow().isoformat() + 'Z'
-        min_date_string = datetime.datetime.combine(oldest_lab_date, datetime.time()).isoformat() + 'Z'
-        date_start_string = request.GET.get('date_start', min_date_string)
-        date_end_string = request.GET.get('date_end', max_date_string)
-        
-        #resets when changing date start/end
-        if previous_date_start != date_start_string or previous_date_end != date_end_string:
-            offset = 0
-            
-        #save off params in session
-        request.session['date_start'] = date_start_string        
-        request.session['date_end'] =  date_end_string
-        
-        # set params for lab query    
-        parameters = {'limit': limit, 'offset': offset, 'order_by': order_by}
-        parameters.update({'date_range': 'date*' + date_start_string + '*' + date_end_string})
-        if lab_status in LAB_STATUSES:
-            parameters['status_code_identifier'] = lab_status
-        resp, content = client.generic_list(record_id=record_id, data_model="LabResult", body=parameters)
-        if resp['status'] != '200':
-            # TODO: handle errors
-            raise Exception("Error fetching labs: %s"%content)
-        labs = parse_labs(simplejson.loads(content))
     else:
-        #TODO: not the case anymore
-        print 'FIXME: no client support for labs via carenet. See problems app for an example.. Exiting...'
-        return
-    
+        resp, content = client.carenet_generic_list(carenet_id=carenet_id, data_model="LabResult", body=oldest_params)
+    if resp['status'] != '200':
+        # TODO: handle errors
+        raise Exception("Error fetching oldest lab: %s"%content)
+    oldest_lab = parse_labs(simplejson.loads(content))
+    if len(oldest_lab) > 0:
+        oldest_lab_date = oldest_lab[0]['date']
+    else:
+        oldest_lab_date = datetime.datetime.utcnow()
+
+    max_date_string = datetime.datetime.utcnow().isoformat() + 'Z'
+    min_date_string = datetime.datetime.combine(oldest_lab_date, datetime.time()).isoformat() + 'Z'
+    date_start_string = request.GET.get('date_start', min_date_string)
+    date_end_string = request.GET.get('date_end', max_date_string)
+
+    #resets when changing date start/end
+    if previous_date_start != date_start_string or previous_date_end != date_end_string:
+        offset = 0
+
+    #save off params in session
+    request.session['date_start'] = date_start_string
+    request.session['date_end'] =  date_end_string
+
+    # set params for lab query
+    parameters = {'limit': limit, 'offset': offset, 'order_by': order_by}
+    parameters.update({'date_range': 'date*' + date_start_string + '*' + date_end_string})
+    if lab_status in LAB_STATUSES:
+        parameters['status_code_identifier'] = lab_status
+    if record_id:
+        resp, content = client.generic_list(record_id=record_id, data_model="LabResult", body=parameters)
+    else:
+        resp, content = client.carenet_generic_list(carenet_id=carenet_id, data_model="LabResult", body=parameters)
+    if resp['status'] != '200':
+        # TODO: handle errors
+        raise Exception("Error fetching labs: %s"%content)
+    labs = parse_labs(simplejson.loads(content))
+
     # build a description for the range of results shown and calculate offsets
     next_offset = None
     prev_offset = None
