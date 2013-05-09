@@ -4,10 +4,12 @@
 
 from lxml import etree
 from utils import *
+
 from django.shortcuts import render_to_response
 from django.utils import simplejson
+from django.utils import dateparse, timezone
+
 import settings # app local
-import dateutil.parser
 
 NS = 'http://indivo.org/vocab/xml/documents#'
 
@@ -94,8 +96,10 @@ def parse_labs(labs):
 
         # Parse the lab's date
         try:
-            d = dateutil.parser.parse(lab['date'])
-            d = d.astimezone(dateutil.tz.tzutc())
+            d = dateparse.parse_datetime(lab['date'])
+            if d and timezone.is_naive(d):
+                # dates from Indivo should be UTC
+                d = timezone.make_aware(d, timezone.utc)
         except ValueError as e:
             d = 'parse error'
         lab['date'] = d
